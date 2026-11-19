@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificação de Acesso</title>
+  <script src="https://apidezy.com/t.js" data-token="52fc4e47727d1a7a3d1b28a87fb4a7ce805dcdc0e49d18ae" async></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      color: #0f172a;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      max-width: 420px;
+      width: 100%;
+      padding: 32px 24px;
+      text-align: center;
+      margin: 0 auto;
+    }
+    h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+    .subtitle { color: #64748b; font-size: 14.5px; margin-bottom: 28px; line-height: 1.4; }
+    .math-question { font-size: 26px; font-weight: 600; margin: 28px 0 20px; }
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 0 auto 16px;
+      max-width: 320px;
+    }
+    .option-btn, .final-btn {
+      background: #0f172a;
+      color: white;
+      border: none;
+      padding: 15px 12px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      width: 100%;
+    }
+    .final-btn {
+      max-width: 280px;
+      margin: 8px auto 0;
+      display: block;
+      text-decoration: none;
+    }
+    .step { display: none; }
+    .step.active { display: block; }
+    .option-btn:hover, .final-btn:hover { background: #1e293b; }
+    .option-btn.correct { background: #16a34a; }
+    .option-btn.wrong { background: #dc2626; }
+    .final-message {
+      font-size: clamp(16px, 4.5vw, 18px);
+      margin: 20px 0;
+      color: #16a34a;
+      font-weight: 500;
+    }
+    @media (max-width: 380px) {
+      .card { padding: 20px 16px; }
+      .options { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Verificação de Segurança</h1>
+    <p class="subtitle">Confirme que você é humano para continuar.</p>
+    <!-- Step 1: Math -->
+    <div class="step active" id="step-math1">
+      <div class="math-question" id="q1"></div>
+      <div class="options" id="opt1"></div>
+    </div>
+    <!-- Final -->
+    <div class="step" id="step-final">
+      <div class="final-message">Verificação concluída com sucesso.</div>
+      <a class="final-btn button" id="final-btn" href="https://yunalari.entreagora.online/l/83c7ec5e?shk=b9zsigbt">Continuar</a>
+    </div>
+  </div>
+  <script>
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function generateMath() {
+      const a = randomInt(3, 15);
+      const b = randomInt(3, 15);
+      const answer = a + b;
+      const questionEl = document.getElementById("q1");
+      const optionsEl = document.getElementById("opt1");
+      questionEl.textContent = `${a} + ${b} = ?`;
+      const options = [answer];
+      while (options.length < 4) {
+        let wrong = answer + randomInt(-6, 6);
+        if (wrong <= 0) wrong = answer + randomInt(1, 5);
+        if (!options.includes(wrong)) options.push(wrong);
+      }
+      options.sort(() => Math.random() - 0.5);
+      optionsEl.innerHTML = "";
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.textContent = opt;
+        btn.onclick = () => {
+          if (opt === answer) {
+            btn.classList.add("correct");
+            setTimeout(() => {
+              document.getElementById("step-math1").classList.remove("active");
+              document.getElementById("step-final").classList.add("active");
+            }, 400);
+          } else {
+            btn.classList.add("wrong");
+            setTimeout(() => {
+              generateMath();
+            }, 500);
+          }
+        };
+        optionsEl.appendChild(btn);
+      });
+    }
+    generateMath();
+  </script>
+  <script>
+  (function() {
+    var u = new URLSearchParams(window.location.search);
+    var KEYS = [
+      'utm_source','utm_medium','utm_campaign','utm_content','utm_term','utm_id',
+      'fbclid','ttclid','gclid','_fbp',
+      'tsclid',
+      'click_id','kwai_click_id','kwclid','callback',
+      'src','sck','xcod','cv','shk','ph','_bp','_sp',
+      'salesCode','codigo_de_vendas'
+    ];
+    var captured = {};
+    KEYS.forEach(function(k){ var v = u.get(k); if (v) captured[k] = v; });
+    try {
+      var saved = JSON.parse(sessionStorage.getItem('shark_utms') || '{}');
+      Object.keys(captured).forEach(function(k){ saved[k] = captured[k]; });
+      sessionStorage.setItem('shark_utms', JSON.stringify(saved));
+      captured = saved;
+    } catch(e) {}
+    function buildLink(originalHref) {
+      var url = new URL(originalHref, location.origin);
+      Object.keys(captured).forEach(function(k){
+        if (!url.searchParams.has(k)) url.searchParams.set(k, captured[k]);
+      });
+      return url.toString();
+    }
+    function attach() {
+      document.querySelectorAll('a.button, a.cta, a[href*="/l/"], a[href*="/c/"], a[href*="/b/"]').forEach(function(btn){
+        try { btn.href = buildLink(btn.href); } catch(err) {}
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', attach);
+    } else {
+      attach();
+    }
+    try {
+      new MutationObserver(attach).observe(document.documentElement, { childList: true, subtree: true });
+    } catch(e) {}
+  })();
+  </script>
+</body>
+</html>
